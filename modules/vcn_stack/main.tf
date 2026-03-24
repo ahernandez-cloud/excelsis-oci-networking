@@ -1,12 +1,10 @@
 locals {
+  # Limpia el nombre para que sea válido para DNS (solo letras y números)
+  dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : substr(regexreplace(lower(var.vcn_display_name), "[^a-z0-9]", ""), 0, 15)
+
   subnet_display_name = {
     for k, v in var.subnets : k => coalesce(v.display_name, "${var.vcn_display_name}-${k}")
   }
-
-  vcn_dns_label_effective = coalesce(
-    var.vcn_dns_label,
-    length(regexreplace(lower(var.vcn_display_name), "[^a-z0-9]", "")) > 0 ? substr(regexreplace(lower(var.vcn_display_name), "[^a-z0-9]", ""), 0, 15) : "vcn"
-  )
 
   route_table_id_by_type = {
     public  = oci_core_route_table.public.id
@@ -26,7 +24,7 @@ resource "oci_core_vcn" "this" {
   compartment_id = var.compartment_id
   cidr_blocks    = [var.vcn_cidr_block]
   display_name   = var.vcn_display_name
-  dns_label      = local.vcn_dns_label_effective
+  dns_label      = local.dns_label
   freeform_tags  = var.freeform_tags
 }
 
