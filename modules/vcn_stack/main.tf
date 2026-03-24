@@ -78,8 +78,8 @@ resource "oci_core_route_table" "private" {
   }
 
   route_rules {
-    destination       = data.oci_core_services.all_oci_services.services[0].cidr_block
-    destination_type  = "SERVICE_CIDR"
+    destination       = "all-sa-saopaulo-1-services-in-oracle-services-network"
+    destination_type  = "SERVICE_CIDR_BLOCK"
     network_entity_id = oci_core_service_gateway.this.id
   }
 }
