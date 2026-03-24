@@ -1,12 +1,3 @@
-# São Paulo (GRU): configurar el provider con region = "sa-saopaulo-1" para que este data source liste los servicios de esa región.
-data "oci_core_services" "all_oci_services" {
-  filter {
-    name   = "name"
-    values = ["All .* Services In Oracle Services Network"]
-    regex  = true
-  }
-}
-
 locals {
   dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : "vcnprod"
 
@@ -48,7 +39,7 @@ resource "oci_core_service_gateway" "this" {
   freeform_tags  = var.freeform_tags
 
   services {
-    service_id = data.oci_core_services.all_oci_services.services[0].id
+    service_id = "ocid1.service.oc1.sa-saopaulo-1.aaaaaaaacd57uig6rzxm2qfipukbqpje2bhztqszh3aj7zk2jtvf6gvntena"
   }
 }
 
@@ -78,7 +69,7 @@ resource "oci_core_route_table" "private" {
   }
 
   route_rules {
-    destination       = "all-sa-saopaulo-1-services-in-oracle-services-network"
+    destination       = "all-gru-services-in-oracle-services-network"
     destination_type  = "SERVICE_CIDR_BLOCK"
     network_entity_id = oci_core_service_gateway.this.id
   }
