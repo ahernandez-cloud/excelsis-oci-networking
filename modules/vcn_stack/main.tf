@@ -1,3 +1,13 @@
+# Servicios de red de la región actual (la del provider "oci": var.region en el stack).
+# El filtro selecciona el servicio "All Services" de la Oracle Services Network (nombre típico: All Ashburn Services In Oracle Services Network).
+data "oci_core_services" "all_oci_services" {
+  filter {
+    name   = "name"
+    values = ["All .* Services In Oracle Services Network"]
+    regex  = true
+  }
+}
+
 locals {
   dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : "vcnprod"
 
@@ -6,14 +16,6 @@ locals {
   route_table_id_by_type = {
     public  = oci_core_route_table.public.id
     private = oci_core_route_table.private.id
-  }
-}
-
-data "oci_core_services" "all_oci_services" {
-  filter {
-    name   = "name"
-    values = ["All .* Services In Oracle Services Network"]
-    regex  = true
   }
 }
 
@@ -69,6 +71,8 @@ resource "oci_core_route_table" "private" {
   vcn_id         = oci_core_vcn.this.id
   display_name   = "${var.vcn_display_name}-rt-private"
   freeform_tags  = var.freeform_tags
+
+  depends_on = [oci_core_service_gateway.this]
 
   route_rules {
     destination       = "0.0.0.0/0"
