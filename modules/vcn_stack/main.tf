@@ -1,9 +1,7 @@
 locals {
-  dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : substr(regexreplace(lower(var.vcn_display_name), "[^a-z0-9]", ""), 0, 15)
+  dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : "vcnprod"
 
-  subnet_display_name = {
-    for k, v in var.subnets : k => coalesce(v.display_name, "${var.vcn_display_name}-${k}")
-  }
+  subnet_display_name = { for k, v in var.subnets : k => "${var.vcn_display_name}-${k}" }
 
   route_table_id_by_type = {
     public  = oci_core_route_table.public.id
