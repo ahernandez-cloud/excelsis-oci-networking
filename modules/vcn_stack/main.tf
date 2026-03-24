@@ -1,5 +1,4 @@
-# Servicios de red de la región actual (la del provider "oci": var.region en el stack).
-# El filtro selecciona el servicio "All Services" de la Oracle Services Network (nombre típico: All Ashburn Services In Oracle Services Network).
+# São Paulo (GRU): configurar el provider con region = "sa-saopaulo-1" para que este data source liste los servicios de esa región.
 data "oci_core_services" "all_oci_services" {
   filter {
     name   = "name"
@@ -71,8 +70,6 @@ resource "oci_core_route_table" "private" {
   vcn_id         = oci_core_vcn.this.id
   display_name   = "${var.vcn_display_name}-rt-private"
   freeform_tags  = var.freeform_tags
-
-  depends_on = [oci_core_service_gateway.this]
 
   route_rules {
     destination       = "0.0.0.0/0"
