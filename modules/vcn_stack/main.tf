@@ -1,5 +1,4 @@
 locals {
-  # Limpia el nombre para que sea válido para DNS (solo letras y números)
   dns_label = var.vcn_dns_label != null && var.vcn_dns_label != "" ? var.vcn_dns_label : substr(regexreplace(lower(var.vcn_display_name), "[^a-z0-9]", ""), 0, 15)
 
   subnet_display_name = {
